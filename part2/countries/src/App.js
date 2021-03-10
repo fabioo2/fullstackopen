@@ -9,11 +9,9 @@ function App() {
     const [search, setSearch] = useState('');
 
     const hook = () => {
-        axios
-            .get('https://restcountries.eu/rest/v2/all/')
-            .then((response) => {
-                setCountries(response.data);
-            });
+        axios.get('https://restcountries.eu/rest/v2/all/').then((response) => {
+            setCountries(response.data);
+        });
     };
 
     useEffect(hook, []);
@@ -23,7 +21,6 @@ function App() {
             <h2>Search Countries</h2>
             <p>search countries</p>
             <Filter value={search} setSearch={setSearch} />
-            <h2>Countries</h2>
             <Countries countries={countries} search={search} />
         </div>
     );
