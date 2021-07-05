@@ -9,9 +9,11 @@ function App() {
     const [search, setSearch] = useState('');
 
     const hook = () => {
-        axios.get('https://restcountries.eu/rest/v2/all/').then((response) => {
-            setCountries(response.data);
-        });
+        axios
+            .get('https://restcountries.eu/rest/v2/all/')
+            .then((response) => {
+                setCountries(response.data);
+            });
     };
 
     useEffect(hook, []);

@@ -10,9 +10,10 @@ import personService from './services/persons';
 const App = () => {
     const [persons, setPersons] = useState([]);
     const [newName, setNewName] = useState('');
-    const [newNumber, setNewNumber] = useState('');
+    const [newPhoneNumber, setNewPhoneNumber] = useState('');
     const [search, setSearch] = useState('');
     const [message, setMessage] = useState('');
+    const [isError, setIsError] = useState(false);
 
     useEffect(() => {
         personService.getAll().then((persons) => setPersons(persons));
@@ -21,7 +22,7 @@ const App = () => {
     const addName = (event) => {
         event.preventDefault();
         setNewName('');
-        setNewNumber('');
+        setNewPhoneNumber('');
 
         const nameExists = persons.find(
             (person) => person.name === newName.trim()
@@ -32,9 +33,10 @@ const App = () => {
                     `${newName} is already added to the phonebook, replace the old number with the a new one?`
                 )
             ) {
+                console.log('confirmed');
                 const updatedPerson = {
                     ...nameExists,
-                    number: newNumber,
+                    phoneNumber: newPhoneNumber,
                 };
                 personService
                     .update(updatedPerson)
@@ -48,44 +50,54 @@ const App = () => {
                         );
                     })
                     .catch((error) => {
-                        setMessage(
-                            `Unable to update, Information on ${updatedPerson.name} has already been removed from the server`
-                        );
+                        setMessage(error.response.data.error);
                     });
             }
         } else {
             const personObject = {
                 name: newName.trim(),
-                number: newNumber,
-                id: persons.length + 1,
+                phoneNumber: newPhoneNumber,
             };
-            personService.create(personObject).then((returnedPerson) => {
-                setPersons(persons.concat(returnedPerson));
-                setNewName('');
-                setMessage(`Added ${returnedPerson.name}`);
-            });
+            personService
+                .create(personObject)
+                .then((returnedPerson) => {
+                    setPersons(persons.concat(returnedPerson));
+                    setNewName('');
+                    setMessage(`Added ${returnedPerson.name}`);
+                })
+                .catch((error) => {
+                    setIsError(true);
+                    setMessage(error.response.data.error);
+                });
         }
     };
 
     return (
         <div>
             <h2>Phonebook</h2>
-            <Message message={message} />
+            <Message message={message} isError={isError} />
             Search the Phonebook:{' '}
-            <Filter value={search} setSearch={setSearch} />
+            <Filter
+                value={search}
+                setSearch={setSearch}
+                setMessage={setMessage}
+            />
             <h3>Add a New Number</h3>
             <NameForm
+                setMessage={setMessage}
                 addName={addName}
                 newName={newName}
                 setNewName={setNewName}
-                newNumber={newNumber}
-                setNewNumber={setNewNumber}
+                newPhoneNumber={newPhoneNumber}
+                setNewPhoneNumber={setNewPhoneNumber}
             />
             <h2>Numbers</h2>
             <Persons
                 persons={persons}
                 search={search}
                 setPersons={setPersons}
+                setMessage={setMessage}
+                isError={setIsError}
             />
         </div>
     );

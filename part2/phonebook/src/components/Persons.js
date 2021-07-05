@@ -2,10 +2,25 @@ import React from 'react';
 import Name from './Name';
 import personService from '../services/persons';
 
-const Persons = ({ persons, search, setPersons }) => {
+const Persons = ({
+    persons,
+    search,
+    setPersons,
+    setMessage,
+    setIsError,
+}) => {
     const deletePerson = (id, name) => {
         if (window.confirm(`Delete ${name}?`)) {
-            personService.deletePerson(id);
+            personService
+                .deletePerson(id)
+                .then((result) => {
+                    setMessage(`${name} has been deleted`);
+                })
+                .catch((error) => {
+                    setIsError(true);
+                    setMessage(error.response.data.error);
+                });
+
             setPersons(persons.filter((p) => p.id !== id));
         }
     };
@@ -21,7 +36,7 @@ const Persons = ({ persons, search, setPersons }) => {
                     <div key={person.id}>
                         <Name
                             name={person.name}
-                            number={person.number}
+                            phoneNumber={person.phoneNumber}
                             id={person.id}
                             setPersons={setPersons}
                         />

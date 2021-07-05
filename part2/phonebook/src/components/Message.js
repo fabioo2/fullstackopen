@@ -1,35 +1,31 @@
 import React from 'react';
 
-const Message = ({ message }) => {
+const Message = ({ message, isError }) => {
     let messageStyle = {};
-    if (message.includes('Added')) {
+    if (message) {
         messageStyle = {
-            color: 'green',
+            display: 'block',
             borderWidth: 2,
-            borderColor: 'green',
             borderStyle: 'solid',
-            borderRadius: 5,
             backgroundColor: 'lightGrey',
             fontSize: 20,
             padding: 10,
             fontWeight: 'bold',
-        };
-    } else if (message.includes('Unable')) {
-        messageStyle = {
-            color: 'red',
-            borderWidth: 2,
-            borderColor: 'red',
-            borderStyle: 'solid',
             borderRadius: 5,
-            backgroundColor: 'lightGrey',
-            fontSize: 20,
-            padding: 10,
-            fontWeight: 'bold',
         };
-    } else {
-        messageStyle = {
-            display: 'none',
-        };
+        if (isError) {
+            messageStyle = {
+                ...messageStyle,
+                color: 'red',
+                borderColor: 'red',
+            };
+        } else {
+            messageStyle = {
+                ...messageStyle,
+                color: 'green',
+                borderColor: 'green',
+            };
+        }
     }
 
     return (

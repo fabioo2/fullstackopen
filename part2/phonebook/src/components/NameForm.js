@@ -4,8 +4,9 @@ const PersonForm = ({
     addName,
     newName,
     setNewName,
-    newNumber,
-    setNewNumber,
+    newPhoneNumber,
+    setNewPhoneNumber,
+    setMessage,
 }) => (
     <form onSubmit={addName}>
         <div>
@@ -14,13 +15,15 @@ const PersonForm = ({
                 value={newName}
                 onChange={(event) => {
                     setNewName(event.target.value);
+                    setMessage('');
                 }}
             />{' '}
             Number:{' '}
             <input
-                value={newNumber}
+                value={newPhoneNumber}
                 onChange={(event) => {
-                    setNewNumber(event.target.value);
+                    setNewPhoneNumber(event.target.value);
+                    setMessage('');
                 }}
             />
         </div>
